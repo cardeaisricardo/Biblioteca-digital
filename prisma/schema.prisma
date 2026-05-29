@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  loans     Loan[]
+  @@map("users")
+}
+
+model Author {
+  id        String   @id @default(cuid())
+  name      String
+  bio       String?
+  birthDate DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  books     Book[]
+  @@map("authors")
+}
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  isbn        String   @unique
+  summary     String?
+  publishedAt DateTime?
+  available   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  authorId    String
+  author      Author   @relation(fields: [authorId], references: [id])
+  loans       Loan[]
+  @@map("books")
+}
+
+model Loan {
+  id         String    @id @default(cuid())
+  loanDate   DateTime  @default(now())
+  returnDate DateTime?
+  dueDate    DateTime
+  status     String    @default("ACTIVE")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  bookId     String
+  book       Book      @relation(fields: [bookId], references: [id])
+  @@map("loans")
+}

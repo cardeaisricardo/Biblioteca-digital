@@ -1,0 +1,54 @@
+### Variáveis
+@baseUrl = http://localhost:3000
+
+### 1. Registro de Usuário ADMIN
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Administrador",
+  "email": "admin@biblioteca.com",
+  "password": "adminpassword",
+  "role": "ADMIN"
+}
+
+### 2. Login ADMIN
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@biblioteca.com",
+  "password": "adminpassword"
+}
+
+###
+
+@adminToken = {{loginAdmin.response.body.token}}
+
+### 3. Criar Autor
+POST {{baseUrl}}/authors
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "J.R.R. Tolkien",
+  "bio": "Escritor britânico, autor de O Senhor dos Anéis.",
+  "birthDate": "1892-01-03T00:00:00Z"
+}
+
+### 4. Criar Livro
+POST {{baseUrl}}/books
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "O Hobbit",
+  "isbn": "9788595084742",
+  "summary": "Bilbo Bolseiro é um hobbit que leva uma vida confortável...",
+  "publishedAt": "1937-09-21T00:00:00Z",
+  "authorId": "COLOQUE_O_ID_DO_AUTOR_AQUI"
+}
+
+### 5. Listar Livros
+GET {{baseUrl}}/books
